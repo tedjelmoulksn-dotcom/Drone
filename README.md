@@ -47,7 +47,9 @@ Bench motor tests are performed without propellers until assignment, direction a
 
 ## Evidence and next milestone
 
-The repository provides design documentation and records of integration challenges. It does not yet establish flight endurance, measured thrust margin or autonomous-flight performance. The next milestone is a documented manual-flight validation with configuration records and repeatable logs.
+The project records firmware bring-up and the engineering decisions needed to integrate the actual aircraft. The next milestone connects RC input, calibrated sensors and motor output in a manual-flight test, with configuration snapshots and logs supporting diagnosis.
+
+The design documentation follows the aircraft from component choices through firmware bring-up and integration gates. Manual-flight validation is the current milestone; later vision/autonomy work depends on that stable baseline.
 
 ## Attribution and licence
 
