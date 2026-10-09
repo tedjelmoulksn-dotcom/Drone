@@ -1,6 +1,6 @@
 # NXP FMUK66 Quadcopter — PX4 Integration and Engineering
 
-A quadrotor integration project built around the NXP RDDRONE-FMUK66 flight-management unit and PX4. The repository documents hardware selection, power interfaces, propulsion sizing, firmware bring-up and staged verification.
+PX4 firmware bring-up and system integration for an NXP FMUK66 quadcopter.
 
 ## Current scope
 
