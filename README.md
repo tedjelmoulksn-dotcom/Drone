@@ -1,41 +1,54 @@
-# NXP HoverGames FPV / Autonomous Drone
+# NXP FMUK66 Quadcopter — PX4 Integration and Engineering
 
-Engineering project based on the **NXP RDDRONE-FMUK66** flight management unit and **PX4 Autopilot**. The first milestone is intentionally conservative: build, wire, configure and validate a quadrotor that can be flown reliably with an RC transmitter. Computer vision and Raspberry Pi integration are planned only after the flight platform is validated.
+A quadrotor integration project built around the NXP RDDRONE-FMUK66 flight-management unit and PX4. The repository documents hardware selection, power interfaces, propulsion sizing, firmware bring-up and staged verification.
 
-## Engineering objectives
+## Current scope
 
-1. Rebuild a complete quadrotor around the FMUK66 and PX4.
-2. Validate the power chain, ESC/motor mapping, sensor calibration and RC control.
-3. Characterize mass, thrust margin, power consumption and failure modes.
-4. Add telemetry and flight logging for repeatable tests.
-5. Later: add a Raspberry Pi + camera as a companion-computer vision layer without compromising the real-time flight controller.
+The immediate objective is reliable RC-controlled flight. Bootloader and firmware bring-up work is recorded, including J-Link and Linux virtual-machine USB access. Manual-flight validation remains the next integration milestone; GNSS, telemetry extensions, companion-computer vision and autonomy are later stages.
 
-## Repository map
-
-| Document | Purpose |
-|---|---|
-| [`docs/01_SYSTEM_OVERVIEW.md`](docs/01_SYSTEM_OVERVIEW.md) | System goal, architecture and milestones |
-| [`docs/02_HARDWARE_SELECTION.md`](docs/02_HARDWARE_SELECTION.md) | Hardware choices, compatibility and open points |
-| [`docs/03_ELECTRICAL_ARCHITECTURE.md`](docs/03_ELECTRICAL_ARCHITECTURE.md) | Power, signal paths and FMUK66 interfaces |
-| [`docs/04_FLIGHT_PHYSICS.md`](docs/04_FLIGHT_PHYSICS.md) | Thrust, torque, control axes and sizing logic |
-| [`docs/05_PX4_SOFTWARE.md`](docs/05_PX4_SOFTWARE.md) | PX4, QGroundControl, uORB and development workflow |
-| [`docs/06_INTEGRATION_AND_TEST_PLAN.md`](docs/06_INTEGRATION_AND_TEST_PLAN.md) | Bring-up sequence and verification gates |
-| [`docs/07_ENGINEERING_CHALLENGES.md`](docs/07_ENGINEERING_CHALLENGES.md) | Problems encountered, risks and engineering decisions |
-| [`docs/08_REFERENCES.md`](docs/08_REFERENCES.md) | Official documentation, tutorials and useful resources |
-| [`assets/diagrams/system_architecture.svg`](assets/diagrams/system_architecture.svg) | Electrical/control architecture diagram |
+This is a system-integration repository, not an independently developed autopilot stack.
 
 ## Architecture
 
 ![System architecture](assets/diagrams/system_architecture.svg)
 
-## Current milestone
+The flight controller handles the time-sensitive sensor and actuator path. A proposed Raspberry Pi/camera layer is reserved for later vision work, after the base aircraft has been validated.
 
-**Milestone M1 — Manual flight:** RC transmitter -> receiver -> FMUK66/PX4 -> ESCs -> motors. Raspberry Pi and vision are explicitly outside M1.
+## Engineering documents
 
-## Safety
+| Document | Content |
+|---|---|
+| [System overview](docs/01_SYSTEM_OVERVIEW.md) | Objectives, architecture and milestones |
+| [Hardware selection](docs/02_HARDWARE_SELECTION.md) | Components, compatibility and unresolved choices |
+| [Electrical architecture](docs/03_ELECTRICAL_ARCHITECTURE.md) | Power distribution, sensing and FMU connections |
+| [Flight physics](docs/04_FLIGHT_PHYSICS.md) | Thrust, moments, mass and propulsion sizing |
+| [PX4 software](docs/05_PX4_SOFTWARE.md) | Firmware, QGroundControl and development concepts |
+| [Integration and test plan](docs/06_INTEGRATION_AND_TEST_PLAN.md) | Bring-up sequence and verification gates |
+| [Engineering challenges](docs/07_ENGINEERING_CHALLENGES.md) | Encountered issues and design decisions |
+| [References](docs/08_REFERENCES.md) | Source documentation and further reading |
 
-All bench tests are performed **without propellers** until motor assignment, direction, RC mapping, failsafes and arming behaviour have been verified. LiPo wiring and polarity are checked before power-up.
+## Important integration decisions
 
-## Technical basis
+- **Legacy firmware compatibility:** preserve the known board revision, bootloader, firmware target and toolchain baseline.
+- **Power-interface semantics:** the documented FMUK66 power input uses approximately 5.3 V and analogue voltage/current signals. Connector shape alone does not establish compatibility with a digital/I²C power module.
+- **Actual propulsion hardware:** RS2205 2300 kV motors differ from the larger reference HoverGames configuration. Recalculate thrust margin and power demand for the actual airframe and propellers.
+- **Staged integration:** validate RC mapping, sensor calibration, ESC/motor assignment and failsafes before introducing the companion computer.
 
-The FMUK66 is the original HoverGames FMU and follows the Pixhawk FMUv4 architecture while using an NXP Kinetis K66 MCU. NXP's guide provides the reference assembly and connector pinouts; PX4 provides the flight stack and QGroundControl-based configuration workflow.
+## Reviewing the project
+
+```bash
+git clone https://github.com/tedjelmoulksn-dotcom/Drone.git
+cd Drone
+```
+
+Read the overview first, then the electrical architecture and test plan. Firmware source is maintained separately in the [personal PX4 fork](https://github.com/tedjelmoulksn-dotcom/PX4-Autopilot); upstream PX4 retains its own authorship and licence.
+
+Bench motor tests are performed without propellers until assignment, direction and arming behaviour are verified. Power polarity and supply compatibility are checked before energising the system.
+
+## Evidence and next milestone
+
+The repository provides design documentation and records of integration challenges. It does not yet establish flight endurance, measured thrust margin or autonomous-flight performance. The next milestone is a documented manual-flight validation with configuration records and repeatable logs.
+
+## Attribution and licence
+
+PX4, NXP and third-party hardware documentation remain attributed to their respective authors. No project-wide licence has been defined for this documentation repository.
